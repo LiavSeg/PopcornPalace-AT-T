@@ -1,0 +1,14 @@
+version: "3.8"
+services:
+  db:
+    container_name: popcorn-palace
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: popcorn_palace
+      POSTGRES_PASSWORD: popcorn_palace
+      POSTGRES_DB: popcorn-palace
+    ports:
+      - target: 5432
+        published: 5431
+        protocol: tcp

@@ -1,0 +1,21 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: popcorn-palace
+  datasource:
+    url: jdbc:postgresql://localhost:5431/popcorn-palace
+    username: popcorn_palace
+    password: popcorn_palace
+    driverClassName: org.postgresql.Driver
+    platform: postgres
+
+  jpa:
+    database: POSTGRESQL
+    show-sql: true
+    hibernate:
+      ddl-auto: update # Creates our db schema using the entities
+  sql:
+    init:
+      mode: always
