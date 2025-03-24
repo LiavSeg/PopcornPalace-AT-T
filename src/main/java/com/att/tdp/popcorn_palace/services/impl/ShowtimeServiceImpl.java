@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @Service
 public class ShowtimeServiceImpl implements ShowtimeService {
-    private ShowtimeRepository showtimeRepository;
+    private final ShowtimeRepository showtimeRepository;
     private MovieRepository movieRepository;
     private BookingRepository bookingRepository;
 

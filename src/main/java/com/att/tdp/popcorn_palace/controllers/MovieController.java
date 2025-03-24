@@ -49,17 +49,25 @@ public class MovieController {
 
 
     @GetMapping(path = "/movies/all")
-    public List<MovieDto> getAllMovies() {
+    public ResponseEntity<?> getAllMovies() {
+        try{
         List<MovieEntity> movies = movieService.findAll();
-        return movies.stream()
-                .map(movieMapper::mapTo)
-                .collect(Collectors.toList());
+        List<MovieDto> moviesDto = movies.stream().map(movieMapper::mapTo).collect(Collectors.toList());
+        return new ResponseEntity<>(moviesDto,HttpStatus.OK);
+    }
+        catch(Exception e){
+            return errorHandler.badRequest("",e,currPath);
+        }
     }
 
 
     @PostMapping(path = "/movies/update/{title}")
     public ResponseEntity<?> updateMovie(@PathVariable String title, @RequestBody MovieDto movieDto) {
-        List<MovieDto> allMovies = getAllMovies();
+        ResponseEntity<?> response = getAllMovies();  // Call the method
+        if (response.getStatusCode() == HttpStatus.BAD_REQUEST)
+            return response;
+
+        List<MovieDto> allMovies = (List<MovieDto>)response.getBody();
         try {
             for (MovieDto movieDto1 : allMovies) {
                 if (movieDto1.getTitle().equals(title)) {

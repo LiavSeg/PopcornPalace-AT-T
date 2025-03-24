@@ -4,6 +4,7 @@ import com.att.tdp.popcorn_palace.database.TestDataUtils;
 import com.att.tdp.popcorn_palace.domain.Entities.MovieEntity;
 import com.att.tdp.popcorn_palace.domain.Entities.ShowtimeEntity;
 import com.att.tdp.popcorn_palace.domain.dto.BookingDto;
+import com.att.tdp.popcorn_palace.services.BookingService;
 import com.att.tdp.popcorn_palace.services.MovieService;
 import com.att.tdp.popcorn_palace.services.ShowtimeService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,32 +28,79 @@ import static com.att.tdp.popcorn_palace.database.TestDataUtils.createTestMovieA
 @AutoConfigureMockMvc
 public class BookingControllerIntegrationTests {
 
-    private MockMvc mockMvc;
-    private ObjectMapper objectMapper;
-    private ShowtimeService showtimeService;
-    private MovieService movieService;
+    private final MockMvc mockMvc;
+    private final ObjectMapper objectMapper;
+    private final ShowtimeService showtimeService;
+    private final MovieService movieService;
+    private final BookingService bookingService;
+
     @Autowired
-    public BookingControllerIntegrationTests(MockMvc mockMvc ,ShowtimeService showtimeService,MovieService movieService){
+    public BookingControllerIntegrationTests(MockMvc mockMvc ,
+                                             ShowtimeService showtimeService,
+                                             MovieService movieService,
+                                             BookingService bookingService) {
         this.mockMvc = mockMvc;
         this.objectMapper = new ObjectMapper();
         this.showtimeService = showtimeService;
         this.movieService = movieService;
+        this.bookingService = bookingService;
     }
 
     @Test
     public void testThatCreatingBookingIsGenerating200HttpStatus() throws Exception {
-        MovieEntity m  =createTestMovieA();
-        MovieEntity saved = movieService.createMovie(m);
-        ShowtimeEntity showtimeEntity = TestDataUtils.creatTestShowtimeEntityA();
-        showtimeEntity.setMovie(saved);
-        ShowtimeEntity savedS = showtimeService.createShowtime(showtimeEntity);
+
+        MovieEntity movieForTheShowtime  = createTestMovieA();
+        MovieEntity savedMovieForTheShowtime = movieService.createMovie(movieForTheShowtime);
+
+        ShowtimeEntity showtimeEntityForTheBooking = TestDataUtils.creatTestShowtimeEntityA();
+        showtimeEntityForTheBooking.setMovie(savedMovieForTheShowtime);
+        ShowtimeEntity savedShowtimeEntityForTheBooking = showtimeService.createShowtime(showtimeEntityForTheBooking);
+
         BookingEntity bookingEntity = TestDataUtils.createTestBookingA();
-        bookingEntity.setShowtimeId(savedS.getId());
-        bookingEntity.setShowtimeId(saved.getId());
+        bookingEntity.setShowtimeId(savedShowtimeEntityForTheBooking.getId());
         String bookingJson = objectMapper.writeValueAsString(bookingEntity);
+
         mockMvc.perform(MockMvcRequestBuilders.post("/bookings")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(bookingJson)
         ).andExpect(MockMvcResultMatchers.status().isOk());
     }
+
+    @Test
+    public void testThatBookingWithANonExistingShowtimeReturns404HttpsStatus() throws Exception {
+        BookingEntity bookingEntity = TestDataUtils.createTestBookingA();
+        bookingEntity.setShowtimeId(1423);
+        String bookingJson = objectMapper.writeValueAsString(bookingEntity);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/bookings")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(bookingJson)
+        ).andExpect(MockMvcResultMatchers.status().isNotFound());
+
+    }
+
+    @Test
+    public void testThatBookingAnAlreadyBookedSeatReturns409HttpsStatus() throws Exception {
+        MovieEntity movieForTheShowtime  = createTestMovieA();
+        MovieEntity savedMovieForTheShowtime = movieService.createMovie(movieForTheShowtime);
+
+        ShowtimeEntity showtimeEntityForTheBooking = TestDataUtils.creatTestShowtimeEntityA();
+        showtimeEntityForTheBooking.setMovie(savedMovieForTheShowtime);
+        ShowtimeEntity savedShowtimeEntityForTheBooking = showtimeService.createShowtime(showtimeEntityForTheBooking);
+
+        BookingEntity bookingEntity = TestDataUtils.createTestBookingA();
+        bookingEntity.setShowtimeId(savedShowtimeEntityForTheBooking.getId());
+        bookingService.createBooking(bookingEntity);
+
+        BookingEntity bookingEntityForDoubleBooking= TestDataUtils.createTestBookingA();
+        bookingEntityForDoubleBooking.setShowtimeId(savedShowtimeEntityForTheBooking.getId());
+
+        String bookingJson = objectMapper.writeValueAsString(bookingEntityForDoubleBooking);
+        mockMvc.perform(MockMvcRequestBuilders.post("/bookings")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(bookingJson)
+        ).andExpect(MockMvcResultMatchers.status().isConflict());
+
+    }
+
 }

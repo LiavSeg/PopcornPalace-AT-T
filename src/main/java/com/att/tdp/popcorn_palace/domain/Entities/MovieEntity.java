@@ -18,7 +18,7 @@ public class MovieEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "movie_id_sequence")
     private Integer id;
 
-    @NotNull(message = "Movie genre can't be empty")
+    @NotNull(message = "Movie title can't be empty")
     @NotBlank(message = "Movie title can't be blank")
     private String title;
 

@@ -88,6 +88,15 @@ public final class TestDataUtils {
                 .endTime(generateTimes(11))
                 .build();
     }
+    public static ShowtimeEntity createTestShowtimeEntity() {
+        return ShowtimeEntity.builder()
+                .price(30.2)
+                .movie(null)
+                .theater("Cinema City")
+                .startTime(generateTimes(10))
+                .endTime(generateTimes(11))
+                .build();
+    }
 
     public static ShowtimeEntity createTestShowtimeDtoInvalidStartAfterEnd() {
         return ShowtimeEntity.builder()

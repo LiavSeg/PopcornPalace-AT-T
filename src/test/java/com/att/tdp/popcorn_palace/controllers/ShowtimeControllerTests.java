@@ -26,10 +26,10 @@ import static com.att.tdp.popcorn_palace.database.TestDataUtils.creatTestShowtim
 @AutoConfigureMockMvc
 public class ShowtimeControllerTests {
 
-    private MockMvc mockMvc;
-    private ObjectMapper objectMapper;
-    private MovieService movieService;
-    private ShowtimeService showtimeService;
+    private final MockMvc mockMvc;
+    private final ObjectMapper objectMapper;
+    private final MovieService movieService;
+    private final ShowtimeService showtimeService;
 
     @Autowired
     public ShowtimeControllerTests(MockMvc mockMvc,MovieService movieService,ShowtimeService showtimeService) {
@@ -72,7 +72,7 @@ public class ShowtimeControllerTests {
     }
 
     @Test
-    public void testThatOverlappingShowtimesCantBeFound () throws Exception {
+    public void testThatOverlappingShowtimesGenerates409HttpsStatus () throws Exception {
         ShowtimeEntity testA = creatTestShowtimeEntityA();
         MovieEntity movieEntity = TestDataUtils.createTestMovieA();
         movieService.createMovie(movieEntity);
@@ -91,20 +91,37 @@ public class ShowtimeControllerTests {
 
     }
 
+    @Test
+    public void testThatOverlappingShowtimesCantBeFound () throws Exception {
+        ShowtimeEntity testA = creatTestShowtimeEntityA();
+        MovieEntity movieEntity = TestDataUtils.createTestMovieA();
+        movieService.createMovie(movieEntity);
+        testA.setMovie(movieEntity);
+        showtimeService.createShowtime(testA);
 
+        ShowtimeDto testB = TestDataUtils.createTestShowtimeAdto();
+        testB.setMovieId(movieEntity.getId());
 
+        String jsonTest = objectMapper.writeValueAsString(testB);
 
+        mockMvc.perform(MockMvcRequestBuilders.post("/showtimes")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonTest)
+        ).andExpect(MockMvcResultMatchers.status().isConflict());
+    }
 
+    @Test
+    public void testThatDeleteMovieGenerates200Https() throws Exception {
+        ShowtimeEntity testShowtimeEntity = TestDataUtils.createTestShowtimeEntity();
+        MovieEntity movieEntity = TestDataUtils.createTestMovieA();
+        MovieEntity savedMovie = movieService.createMovie(movieEntity);
+        testShowtimeEntity.setMovie(savedMovie);
 
-
-//    @Test
-//    public void testThatDeleteMovieGenerates200Https() throws Exception {
-//        ShowtimeDto testShowtime = TestDataUtils.creatTestShowtimeEntityADto();
-//        ShowtimeDto savedShowTime = showtimeService.createShowtime(testShowtime);
-//        Integer showtimeId = savedShowTime.getId();
-//        mockMvc.perform(MockMvcRequestBuilders.delete("/showtimes/{showtimeId}",showtimeId))
-//                .andExpect(MockMvcResultMatchers.status().isOk());
-//    }
+        ShowtimeEntity savedShowTime = showtimeService.createShowtime(testShowtimeEntity);
+        Integer showtimeId = savedShowTime.getId();
+        mockMvc.perform(MockMvcRequestBuilders.delete("/showtimes/{showtimeId}",showtimeId))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
 
     @Test
     public void testThatDeleteMovieGenerates404HttpsWhenTryingToDeleteUnknownShowtime() throws Exception {
@@ -114,13 +131,22 @@ public class ShowtimeControllerTests {
     }
 
 
-//    @Test
-//    public void testThatDeleteMovieRemovesShowtime() throws Exception {
-//        ShowtimeEntity testShowtime = creatTestShowtimeEntityA();
-//        ShowtimeEntity savedShowTime = showtimeService.createShowtime(testShowtime);
-//
-//
-//    }
+    @Test
+    public void testThatDeleteMovieRemovesRelatedShowtimeAndGenerates404HttpStatus() throws Exception {
+        MovieEntity movieEntity = TestDataUtils.createTestMovieA();
+        MovieEntity savedMovie = movieService.createMovie(movieEntity);
+
+        ShowtimeEntity testShowtime = creatTestShowtimeEntityA();
+        testShowtime.setMovie(savedMovie);
+        ShowtimeEntity savedShowtime = showtimeService.createShowtime(testShowtime);
+
+        Integer showtimeId =  savedShowtime.getId();
+        movieService.deleteMovie(savedMovie.getTitle());
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/showtimes/{showtimeId}",showtimeId))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+
+    }
 
 }
 

@@ -43,7 +43,8 @@ public class ShowtimeController {
             Optional<MovieEntity> movieEntity = movieService.findById(id);
 
             if (movieEntity.isEmpty()) {
-                Exception e = new Exception(String.format("Cannot find a movie with ID %d for this showtime", id));
+                Exception e = new Exception(String.format("Failed to locate a movie with ID %d for the requested showtime. " +
+                        "\nPlease ensure that the movie ID exists and try again.", id));
                 return errorHandler.notFound("",e,"showtimes");
             }
 

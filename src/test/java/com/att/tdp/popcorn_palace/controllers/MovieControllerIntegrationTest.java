@@ -27,9 +27,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @AutoConfigureMockMvc
 public class MovieControllerIntegrationTest {
 
-    private MockMvc mockMvc;
-    private ObjectMapper objectMapper;
-    private MovieService movieService;
+    private final MockMvc mockMvc;
+    private final ObjectMapper objectMapper;
+    private final MovieService movieService;
 
     @Autowired
     MovieControllerIntegrationTest(MockMvc mockMvc,MovieService movieService) {
