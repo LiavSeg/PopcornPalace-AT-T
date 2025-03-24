@@ -68,6 +68,7 @@ mvn clean install
 ```bash
    docker-compose up -d
 ```
+3. Spring Boot with Hibernate will automatically create and update the database schema for you (via JPA annotations).
 
 ### 5. Configure Application Properties
    * The connection details for PostgreSQL are already configured in the application.yml file. 

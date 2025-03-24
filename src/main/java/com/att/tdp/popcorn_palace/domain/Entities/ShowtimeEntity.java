@@ -17,6 +17,7 @@ import java.time.format.DateTimeFormatter;
 @Builder
 @Entity
 @Table (name = "showtimes")
+
 @ValidStartEndTimes
 public class ShowtimeEntity{
     @Id
@@ -30,6 +31,7 @@ public class ShowtimeEntity{
 
     @NotNull(message = "Showtime must have a start time")
     private String startTime;
+
 
     @NotNull(message = "Showtime must have an end time")
     private String endTime;

@@ -22,11 +22,11 @@ import java.util.Optional;
 @RestController
 public class ShowtimeController {
 
-    private MovieService movieService;
-    private ShowtimeService showtimeService;
-    private Mapper<ShowtimeEntity, ShowtimeDto> showtimeMapper;
+    private final MovieService movieService;
+    private final ShowtimeService showtimeService;
+    private final Mapper<ShowtimeEntity, ShowtimeDto> showtimeMapper;
     private static final Logger logger = LoggerFactory.getLogger(ShowtimeController.class);
-    private ErrorHandler errorHandler;
+    private final ErrorHandler errorHandler;
 
     public ShowtimeController(ShowtimeService showtimeService,Mapper<ShowtimeEntity, ShowtimeDto> showtimeMapper,MovieService movieService) {
         this.errorHandler = new ErrorHandler(ShowtimeController.class);
@@ -51,6 +51,7 @@ public class ShowtimeController {
             ShowtimeEntity showtimeEntity = showtimeMapper.mapFrom(showtimeDto);
             showtimeEntity.setMovie(movieEntity.get());
             ShowtimeEntity savedShowtimeEntity = showtimeService.createShowtime(showtimeEntity);
+
             return new ResponseEntity<>(showtimeMapper.mapTo(savedShowtimeEntity),HttpStatus.OK);
         }
         catch (IllegalStateException e){
@@ -86,14 +87,18 @@ public class ShowtimeController {
             }
             showtimeDto.setMovieId(((ShowtimeDto)showtimeToUpdate.getBody()).getMovieId());
             showtimeDto.setId(showtimeId);
-            createShowtime(showtimeDto);
+
+            ResponseEntity<?> UpdatedShowtime = createShowtime(showtimeDto);
+            if (UpdatedShowtime.getStatusCode() == HttpStatus.BAD_REQUEST) {
+                return UpdatedShowtime;
+            }
             return new ResponseEntity<>(HttpStatus.OK);
         }
         catch (NoSuchElementException | EntityNotFoundException e) {
-            return errorHandler.notFound(showtimeId,e,"showtimes");
+            return errorHandler.notFound(showtimeId,e,"showtimes/update");
         }
         catch (Exception e) {
-            return errorHandler.badRequest("",e,"showtimes");
+            return errorHandler.badRequest("",e,"showtimes/update");
         }
     }
 

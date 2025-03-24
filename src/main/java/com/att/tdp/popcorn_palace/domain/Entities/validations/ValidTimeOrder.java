@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = ValidTimeOrderImpl.class)
 @Target({ ElementType.TYPE, ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ValidTimeOrder {
+public @interface ValidTimeOrder  {
     String message() default "Start time must be before end time.";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};

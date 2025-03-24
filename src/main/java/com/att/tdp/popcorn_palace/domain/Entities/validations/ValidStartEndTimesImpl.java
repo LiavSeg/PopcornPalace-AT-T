@@ -6,6 +6,7 @@ import jakarta.validation.ConstraintValidatorContext;
 
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,6 +24,7 @@ public class ValidStartEndTimesImpl implements ConstraintValidator<ValidStartEnd
             if (startTimeVal == null || endTimeVal == null) {
                 return true; // will be handled by NotNull annotation
             }
+
             DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 
             OffsetDateTime startTime = OffsetDateTime.parse((startTimeVal),formatter);
@@ -34,7 +36,11 @@ public class ValidStartEndTimesImpl implements ConstraintValidator<ValidStartEnd
             return false;
             }
             return true;
-        } catch (Exception e) {
+        }
+        catch (DateTimeParseException e){
+            return false;
+        }
+        catch (Exception e) {
             Logger.getLogger(ValidStartEndTimes.class.getName()).log(Level.SEVERE, null, e);
             return false;
         }
