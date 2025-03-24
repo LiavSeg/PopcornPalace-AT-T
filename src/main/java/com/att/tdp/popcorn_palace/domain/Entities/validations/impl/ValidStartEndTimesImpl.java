@@ -1,6 +1,7 @@
-package com.att.tdp.popcorn_palace.domain.Entities.validations;
+package com.att.tdp.popcorn_palace.domain.Entities.validations.impl;
 
 import com.att.tdp.popcorn_palace.domain.Entities.ShowtimeEntity;
+import com.att.tdp.popcorn_palace.domain.Entities.validations.ValidStartEndTimes;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 

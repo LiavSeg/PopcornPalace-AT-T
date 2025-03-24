@@ -90,7 +90,8 @@ public class ShowtimeController {
 
             ResponseEntity<?> UpdatedShowtime = createShowtime(showtimeDto);
             if (UpdatedShowtime.getStatusCode() == HttpStatus.BAD_REQUEST) {
-                return UpdatedShowtime;
+                throw new Exception("Could not validate updated showtime fields " +
+                        "Please check your input and make sure it's according to the constrains");
             }
             return new ResponseEntity<>(HttpStatus.OK);
         }

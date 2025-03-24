@@ -1,5 +1,6 @@
 package com.att.tdp.popcorn_palace.domain.Entities.validations;
 
+import com.att.tdp.popcorn_palace.domain.Entities.validations.impl.ValidStartEndTimesImpl;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 import java.lang.annotation.ElementType;
