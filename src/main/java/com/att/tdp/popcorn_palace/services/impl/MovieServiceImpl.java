@@ -20,9 +20,9 @@ import java.util.stream.StreamSupport;
 
 @Service
 public class MovieServiceImpl implements MovieService {
-    private ShowtimeRepository showtimeRepository;
-    private MovieRepository movieRepository;
-    private ShowtimeService showtimeService;
+    private final ShowtimeRepository showtimeRepository;
+    private final MovieRepository movieRepository;
+    private final ShowtimeService showtimeService;
     private final Validator validator;
 
     public MovieServiceImpl(MovieRepository movieRepository, Validator validator,ShowtimeRepository showtimeRepository,ShowtimeService showtimeService) {

@@ -15,8 +15,8 @@ import java.util.Optional;
 @Service
 public class BookingServiceImpl implements BookingService  {
 
-    private BookingRepository bookingRepository;
-    private ShowtimeRepository showtimeRepository;
+    private final BookingRepository bookingRepository;
+    private final ShowtimeRepository showtimeRepository;
     public BookingServiceImpl(BookingRepository bookingRepository,ShowtimeRepository showtimeRepository) {
         this.bookingRepository = bookingRepository;
         this.showtimeRepository = showtimeRepository;

@@ -8,21 +8,18 @@ import com.att.tdp.popcorn_palace.services.ShowtimeService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-
-import java.lang.reflect.Array;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Optional;
 
 @Service
 public class ShowtimeServiceImpl implements ShowtimeService {
     private final ShowtimeRepository showtimeRepository;
-    private MovieRepository movieRepository;
-    private BookingRepository bookingRepository;
+    //private final MovieRepository movieRepository;
+    private final BookingRepository bookingRepository;
 
     public ShowtimeServiceImpl(MovieRepository movieRepository, ShowtimeRepository showtimeRepository, BookingRepository bookingRepository) {
-        this.movieRepository = movieRepository;
+        //this.movieRepository = movieRepository;
         this.showtimeRepository = showtimeRepository;
         this.bookingRepository = bookingRepository;
     }

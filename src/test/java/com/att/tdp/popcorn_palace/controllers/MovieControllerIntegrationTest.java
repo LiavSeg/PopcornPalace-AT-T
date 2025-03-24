@@ -1,11 +1,9 @@
 package com.att.tdp.popcorn_palace.controllers;
 
-
 import com.att.tdp.popcorn_palace.database.TestDataUtils;
 import com.att.tdp.popcorn_palace.domain.Entities.MovieEntity;
 import com.att.tdp.popcorn_palace.domain.dto.MovieDto;
 import com.att.tdp.popcorn_palace.services.MovieService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,7 +17,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -59,7 +56,7 @@ public class MovieControllerIntegrationTest {
         String title = savedEntity.getTitle();
         MovieDto movieDtoB = TestDataUtils.createTestMovieBdto();
         String movieJsonB = objectMapper.writeValueAsString(movieDtoB);
-        mockMvc.perform(MockMvcRequestBuilders.put("/movies/update/{title}",title).
+        mockMvc.perform(MockMvcRequestBuilders.post("/movies/update/{title}",title).
                 contentType(MediaType.APPLICATION_JSON)
                 .content(movieJsonB)
         ).andExpect(MockMvcResultMatchers.status().isOk());
@@ -70,31 +67,31 @@ public class MovieControllerIntegrationTest {
         MovieDto movieDto = TestDataUtils.createTestMovieBdto();
         String movieJson = objectMapper.writeValueAsString(movieDto);
         String title = "Does_not_Exist";
-        mockMvc.perform(MockMvcRequestBuilders.put("/movies/update/{title}",title)
+        mockMvc.perform(MockMvcRequestBuilders.post("/movies/update/{title}",title)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(movieJson)
         ).andExpect(MockMvcResultMatchers.status().isNotFound());
     }
-//    @Test
-//    public void testThatUpdateMovieUpdatesMovie() throws Exception {
-//        MovieEntity movieEntity = TestDataUtils.createTestMovieA();
-//        MovieEntity savedEntity = movieService.createMovie(movieEntity);
-//
-//        String title = savedEntity.getTitle();
-//        MovieDto movieDtoB = TestDataUtils.createTestMovieBdto();
-//        String movieJsonB = objectMapper.writeValueAsString(movieDtoB);
-//
-//        movieDtoB.setId(savedEntity.getId());
-//        mockMvc.perform(MockMvcRequestBuilders.put("/movies/update/{title}",title)
-//        .contentType(MediaType.APPLICATION_JSON)
-//                .content(movieJsonB))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(movieDtoB.getId()))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.title").value(movieDtoB.getTitle()))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.genre").value(movieDtoB.getGenre()))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.duration").value(movieDtoB.getDuration()))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.rating").value(movieDtoB.getRating()))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.releaseYear").value(movieDtoB.getReleaseYear())
-//        );
-//    }
+    @Test
+    public void testThatDeleteMovieInDbGenerates200HttpsStatus() throws Exception {
+        MovieEntity movieEntity = TestDataUtils.createTestMovieA();
+        MovieEntity savedEntity = movieService.createMovie(movieEntity);
+        String movieJson = objectMapper.writeValueAsString(savedEntity);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/movies/{movieTitle}",savedEntity.getTitle())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(movieJson)
+        ).andExpect(MockMvcResultMatchers.status().isOk());
+    }
+    @Test
+    public void testThatDeleteMovieGenerates404HttpsStatusWhenMovieNotInDb() throws Exception {
+        MovieEntity movieEntity = TestDataUtils.createTestMovieA();
+        String movieJson = objectMapper.writeValueAsString(movieEntity);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/movies/{movieTitle}",movieEntity.getTitle())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(movieJson)
+        ).andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
 
 }

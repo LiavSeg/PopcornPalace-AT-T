@@ -1,7 +1,5 @@
 package com.att.tdp.popcorn_palace.errors;
 
-
-import com.att.tdp.popcorn_palace.controllers.ShowtimeController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;

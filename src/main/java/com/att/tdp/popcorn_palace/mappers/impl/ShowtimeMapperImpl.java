@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ShowtimeMapperImpl implements Mapper<ShowtimeEntity, ShowtimeDto> {
 
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
 
 
     public ShowtimeMapperImpl (ModelMapper modelMapper) {this.modelMapper = modelMapper;}

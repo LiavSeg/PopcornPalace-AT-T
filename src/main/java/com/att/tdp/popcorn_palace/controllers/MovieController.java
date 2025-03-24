@@ -1,22 +1,12 @@
 package com.att.tdp.popcorn_palace.controllers;
-
-
 import com.att.tdp.popcorn_palace.domain.dto.MovieDto;
 import com.att.tdp.popcorn_palace.errors.ErrorHandler;
-import com.att.tdp.popcorn_palace.errors.ErrorResponse;
 import com.att.tdp.popcorn_palace.mappers.Mapper;
 import com.att.tdp.popcorn_palace.services.MovieService;
 import com.att.tdp.popcorn_palace.domain.Entities.MovieEntity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.*;
-
-import jakarta.validation.Valid;
-
-import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -25,9 +15,9 @@ import java.util.stream.Collectors;
 public class MovieController {
 
 
-    private MovieService movieService;
-    private Mapper<MovieEntity, MovieDto> movieMapper;
-    private ErrorHandler errorHandler;
+    private final MovieService movieService;
+    private final Mapper<MovieEntity, MovieDto> movieMapper;
+    private final ErrorHandler errorHandler;
     private final String currPath = "/movies";
     public MovieController(MovieService movieService, Mapper<MovieEntity,MovieDto> movieMapper) {
         this.movieService = movieService;
