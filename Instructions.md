@@ -31,8 +31,9 @@ Follow these steps to set up and run the application:
 Clone the repository to your local machine.
 
 ```bash
-git clone <your-repository-url>
-cd <project-folder>
+git clone https://github.com/LiavSeg/PopcornPalace-AT-T.git
+
+cd <your-project-folder>
 ```
 
 
