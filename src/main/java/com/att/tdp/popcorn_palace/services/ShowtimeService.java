@@ -8,4 +8,5 @@ public interface ShowtimeService {
     ShowtimeEntity createShowtime(ShowtimeEntity showtimeEntity);
     ShowtimeEntity findById(Integer id);
     void deleteShowtime(Integer id);
+
 }

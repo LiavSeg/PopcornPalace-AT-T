@@ -6,5 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ShowtimeRepository extends CrudRepository<ShowtimeEntity,Integer>{
+    Iterable<ShowtimeEntity> findByTheater(String theater);
+    Iterable<ShowtimeEntity> findByMovieId(Integer movieId);
 
 }

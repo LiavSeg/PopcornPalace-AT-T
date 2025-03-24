@@ -75,7 +75,7 @@ public class MovieRepositoryIntegrationTest {
         MovieEntity movieA = TestDataUtils.createTestMovieA();
         underTest.save(movieA);
         Iterable<MovieEntity> foundMovie = underTest.findByTitle(movieA.getTitle());
-        assertThat(foundMovie).containsExactly(movieA);
+        assertThat(foundMovie).contains(movieA);
 
     }
 

@@ -1,4 +1,5 @@
 package com.att.tdp.popcorn_palace.domain.Entities;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,35 +14,28 @@ import lombok.NoArgsConstructor;
 @Table (name = "movies")
 
 public class MovieEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "movie_id_sequence")
     private Integer id;
+
+    @NotNull(message = "Movie genre can't be empty")
+    @NotBlank(message = "Movie title can't be blank")
     private String title;
+
+    @NotNull(message = "Movie genre can't be empty")
+    @Size(min = 1, max = 50)
     private String genre;
+
+    @Positive(message = "Movie duration must be a positive integer")
     private Integer duration;
+
+    @Min(message = "Movie rating's minimum value is 0", value = 0)
+    @Max(message = "Movie rating's maximum value is 10", value = 10)
     private Double rating;
+    
+    @Min(message = "Movie's release year can't be before 1888", value = 1888)
+    @Max(message = "Movie's release year can't be in the future!",value = 2025)
     private Integer releaseYear;
-
-
-    private void isValidInput(String title, String genre, int duration, double rating, int releaseYear) {
-
-        if (title.isEmpty()){
-            throw new IllegalArgumentException("Title is required");
-        }
-        else if (genre.isEmpty()){
-            throw new IllegalArgumentException("Genre is required");
-        }
-        else if (duration <= 0 || duration > 240){
-            throw new IllegalArgumentException("Duration must be between one minutes to four hours");
-        }
-        else if (rating < 0 || rating > 10){
-            throw new IllegalArgumentException("Rating must be between 0.0 to 10.0");
-        }
-        else if (releaseYear < 1900 || releaseYear > 2025){
-            throw new IllegalArgumentException("Year must be between 1900 to 2025");
-        }
-    }
 
 }
 

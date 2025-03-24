@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class ShowtimeDto {
     private Integer id;
     private Double price;
-    private MovieDto movie;
+    private Integer movieId;
     private String theater;
     private String startTime;
     private String endTime;

@@ -4,6 +4,7 @@ import com.att.tdp.popcorn_palace.domain.Entities.BookingEntity;
 import com.att.tdp.popcorn_palace.domain.Entities.MovieEntity;
 import com.att.tdp.popcorn_palace.domain.Entities.ShowtimeEntity;
 import com.att.tdp.popcorn_palace.domain.dto.MovieDto;
+import com.att.tdp.popcorn_palace.domain.dto.ShowtimeDto;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -68,21 +69,81 @@ public final class TestDataUtils {
                 .build();
     }
 
+    public static ShowtimeDto createTestShowtimeAdto() {
+        return ShowtimeDto.builder()
+                .price(30.2)
+                .movieId(1)
+                .theater("Cinema City")
+                .startTime(generateTimes(10))
+                .endTime(generateTimes(11))
+                .build();
+    }
+
+    public static ShowtimeDto createTestShowtimeBdto() {
+        return ShowtimeDto.builder()
+                .price(30.2)
+                .movieId(1)
+                .theater("Cinema City")
+                .startTime(generateTimes(10))
+                .endTime(generateTimes(11))
+                .build();
+    }
+
+    public static ShowtimeEntity createTestShowtimeDtoInvalidStartAfterEnd() {
+        return ShowtimeEntity.builder()
+                .price(30.2)
+                .movie(null)
+                .theater("Cinema City")
+                .startTime(generateTimes(11))
+                .endTime(generateTimes(10))
+                .build();
+    }
+
+    public static ShowtimeEntity createTestShowtimeEntityInvalidIso() {
+        return ShowtimeEntity.builder()
+                .price(30.2)
+                .movie(null)
+                .theater("Cinema City")
+                .startTime("10")
+                .endTime("11")
+                .build();
+    }
+
+
     public static ShowtimeEntity creatTestShowtimeEntityA(){
         return ShowtimeEntity.builder()
             .price(30.2)
-            .movie(null)
+            .movie(createTestMovieForShow())
             .theater("Cinema City")
             .startTime(generateTimes(10))
-            .endTime(generateTimes(12))
+            .endTime(generateTimes(11))
             .build();
 
     }
 
+    public static ShowtimeDto creatTestShowtimeEntityADto(){
+        return ShowtimeDto.builder()
+                .price(30.2)
+                .theater("Cinema City")
+                .startTime(generateTimes(10))
+                .endTime(generateTimes(11))
+                .build();
+    }
+
+    public static ShowtimeEntity creatTestShowtimeEntityForBooking(){
+        return ShowtimeEntity.builder()
+                .id(1)
+                .price(30.2)
+                .movie(createTestMovieForShow())
+                .theater("Cinema City")
+                .startTime(generateTimes(10))
+                .build();
+
+    }
+
+
     private static String generateTimes(Integer hour) {
-        if (hour == null){
-            hour = 0;
-        }
+
         LocalDateTime currentDate = LocalDateTime.now();
         LocalDateTime customDateTime = currentDate.withHour(hour).withMinute(0).withSecond(0).withNano(0);
         OffsetDateTime offsetDateTime = customDateTime.atOffset(ZoneOffset.UTC);
@@ -91,7 +152,7 @@ public final class TestDataUtils {
 
     public static BookingEntity createTestBookingA() {
         return BookingEntity.builder()
-                .userId(UUID.randomUUID())
+                .userId(UUID.randomUUID().toString())
                 .seatNumber(15)
                 .build();
     }

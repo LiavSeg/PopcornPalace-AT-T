@@ -1,10 +1,15 @@
 package com.att.tdp.popcorn_palace.domain.Entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import org.hibernate.validator.constraints.Length;
 
 import java.util.UUID;
 
@@ -21,13 +26,13 @@ public class BookingEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID bookingId;
 
-    @ManyToOne
-    @JoinColumn(name = "showtimeId")
-    private ShowtimeEntity showtime;
+    @NotNull(message = "Showtime ID cannot be null")
+    private Integer showtimeId;
 
+    @Positive(message = "Seat number must be a positive integer")
     private int seatNumber;
-    private String userId;  // Store the userId as a String (or UUID if preferred)
 
-
-
+    @NotNull(message = "User ID cannot be null")
+    @Size(max = 36, message = "UUID string must not exceed 36 characters")
+    private String userId;
 }
